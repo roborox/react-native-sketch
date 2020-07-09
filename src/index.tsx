@@ -7,14 +7,24 @@ import React, {
   useImperativeHandle,
 } from "react"
 import {
-  NativeModules,
   DeviceEventEmitter,
   EmitterSubscription,
   UIManager,
   findNodeHandle,
+  requireNativeComponent,
+  ViewProps,
 } from "react-native"
 
-const RNSketchView = NativeModules.SketchView
+type SketchViewNativeProps = ViewProps & {
+  toolColor?: string
+  selectedTool: SketchToolType
+  localSourceImagePath: string
+  onChange?: (event: SaveEvent) => void
+}
+
+const RNSketchView = requireNativeComponent<SketchViewNativeProps>(
+  "RNSketchView"
+)
 
 export type SaveEvent = {
   localFilePath: string
@@ -27,10 +37,7 @@ export enum SketchToolType {
   erase = 1,
 }
 
-export type SketchViewProps = {
-  toolColor?: string
-  selectedTool: SketchToolType
-  localSourceImagePath: string
+export type SketchViewProps = Omit<SketchViewNativeProps, "onChange"> & {
   onSaveSketch?: (event: SaveEvent) => void
 }
 
@@ -69,7 +76,6 @@ function SketchView(
 
   const onChange = useCallback(
     (event: any) => {
-      console.log("save event:", event.nativeEvent)
       if (event.nativeEvent.type === "onSaveSketch") {
         onSaveSketch?.({
           localFilePath: event.nativeEvent.event.localFilePath,
