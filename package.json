@@ -111,7 +111,7 @@
         "error",
         {
           "quoteProps": "consistent",
-          "singleQuote": true,
+          "doubleQuote": true,
           "tabWidth": 2,
           "trailingComma": "es5",
           "useTabs": false
@@ -122,10 +122,11 @@
   "eslintIgnore": ["node_modules/", "lib/"],
   "prettier": {
     "quoteProps": "consistent",
-    "singleQuote": true,
+    "doubleQuote": true,
     "tabWidth": 2,
     "trailingComma": "es5",
-    "useTabs": false
+    "useTabs": false,
+    "semi": false
   },
   "@react-native-community/bob": {
     "source": "src",
