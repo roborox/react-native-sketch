@@ -1,35 +1,146 @@
 import React, {
   useRef,
-  useCallback,
   useEffect,
   forwardRef,
   MutableRefObject,
   useImperativeHandle,
+  Component,
 } from "react"
 import {
-  DeviceEventEmitter,
-  EmitterSubscription,
   UIManager,
   findNodeHandle,
   requireNativeComponent,
+  NativeMethods,
+  NativeEventEmitter,
+  NativeModules,
+  processColor,
   ViewProps,
 } from "react-native"
-
-type SketchViewNativeProps = ViewProps & {
-  toolColor?: string
-  selectedTool: SketchToolType
-  localSourceImagePath: string
-  onChange?: (event: SaveEvent) => void
-}
 
 const RNSketchView = requireNativeComponent<SketchViewNativeProps>(
   "RNSketchView"
 )
+const sketchViewEventEmitter = new NativeEventEmitter(
+  NativeModules.RNSketchView
+)
 
-export type SaveEvent = {
-  localFilePath: string
-  imageWidth: number
-  imageHeight: number
+function SketchView(
+  { toolType, tool, onChange, onSaved, onLoad, ...props }: SketchViewProps,
+  ref: ForwardedRef<SketchViewRef>
+) {
+  const requests = useRef({
+    byId: [] as Record<
+      number,
+      {
+        resolve(): void
+        reject(): void
+      }
+    >,
+    nextId: 0,
+  })
+  function handleResponse(handler: (event: any) => void) {
+    return ({ requestId, event }: any) => {
+      handler(event)
+      if (requestId !== undefined) {
+        const request = requests.current.byId[requestId]
+        request?.resolve()
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (typeof onChange !== "function") return
+    const sub = sketchViewEventEmitter.addListener("onChange", onChange)
+    return () => sub.remove()
+  }, [onChange])
+  useEffect(() => {
+    if (typeof onSaved !== "function") return
+    const sub = sketchViewEventEmitter.addListener(
+      "onSaved",
+      handleResponse(onSaved)
+    )
+    return () => sub.remove()
+  }, [onSaved])
+  useEffect(() => {
+    if (typeof onLoad !== "function") return
+    const sub = sketchViewEventEmitter.addListener(
+      "onLoad",
+      handleResponse(onLoad)
+    )
+    return () => sub.remove()
+  }, [onLoad])
+
+  const rnRef = useRef<
+    Component<SketchViewNativeProps, {}, any> & Readonly<NativeMethods>
+  >(null)
+  function sendRequest(method: string, args: any[]) {
+    const requestId = requests.current.nextId++
+    return new Promise<void>((resolve, reject) => {
+      requests.current.byId[requestId] = { resolve, reject }
+      UIManager.dispatchViewManagerCommand(
+        findNodeHandle(rnRef.current),
+        method as any,
+        [requestId, ...args]
+      )
+    })
+  }
+
+  useImperativeHandle(ref, () => ({
+    clearSketch() {
+      UIManager.dispatchViewManagerCommand(
+        findNodeHandle(rnRef.current),
+        "clearSketch" as any,
+        []
+      )
+    },
+    loadSketch(filePath: string) {
+      return sendRequest("loadSketch", [filePath])
+    },
+    reloadSketch() {
+      return sendRequest("reloadSketch", [])
+    },
+    saveSketch(size?: Size) {
+      return sendRequest("saveSketch", [size?.width ?? 0, size?.height ?? 0])
+    },
+    setNativeProps(nativeProps: SketchViewNativeProps) {
+      rnRef.current?.setNativeProps(nativeProps)
+    },
+  }))
+
+  useEffect(() => {
+    const color = "color" in tool ? processColor(tool.color) : undefined
+    UIManager.dispatchViewManagerCommand(
+      findNodeHandle(rnRef.current),
+      "setTool" as any,
+      [toolType, { ...tool, color }]
+    )
+  }, [toolType, tool])
+
+  return <RNSketchView ref={rnRef} {...props} />
+}
+const ForwardedSketchView = forwardRef(SketchView)
+export { ForwardedSketchView as SketchView }
+export default ForwardedSketchView
+
+export type SketchViewRef = {
+  clearSketch(): void
+  loadSketch(filePath: string): Promise<void>
+  reloadSketch(): Promise<void>
+  saveSketch(size?: Size): Promise<void>
+  setNativeProps(props: SketchViewNativeProps): void
+}
+
+export type SketchViewProps = ViewProps & {
+  toolType: SketchToolType
+  tool: AnySketchTool
+  filePath?: string
+  onChange?: (event: AnyChangeEvent) => void
+  onSaved?: (event: SavedLoadEvent) => void
+  onLoad?: (event: SavedLoadEvent) => void
+}
+
+export type SketchViewNativeProps = {
+  filePath?: string
 }
 
 export enum SketchToolType {
@@ -37,81 +148,34 @@ export enum SketchToolType {
   erase = 1,
 }
 
-export type SketchViewProps = Omit<SketchViewNativeProps, "onChange"> & {
-  onSaveSketch?: (event: SaveEvent) => void
+export type PenSketchTool = {
+  color: string
+  thickness: number
+}
+export type EraseSketchTool = {
+  thickness: number
+}
+export type AnySketchTool = PenSketchTool | EraseSketchTool
+
+export type SavedLoadEvent = {
+  filePath: string
+  size: Size
 }
 
-export type SketchViewRef = {
-  clearSketch(): void
-  saveSketch(): void
-  changeTool(tool: SketchToolType): void
+export type PenChangeEvent = {
+  type: SketchToolType.pen
 }
+export type EraseChangeEvent = {
+  type: SketchToolType.erase
+}
+export type AnyChangeEvent = PenChangeEvent | EraseChangeEvent
+
+export type Size = {
+  width: number
+  height: number
+}
+
 type ForwardedRef<T> =
   | ((instance: T | null) => void)
   | MutableRefObject<T | null>
   | null
-
-function SketchView(
-  { onSaveSketch, ...props }: SketchViewProps,
-  ref: ForwardedRef<SketchViewRef>
-) {
-  const subscriptions = useRef<EmitterSubscription[]>([])
-
-  useEffect(() => {
-    if (typeof onSaveSketch !== "function") return
-    const sub = DeviceEventEmitter.addListener("onSaveSketch", onSaveSketch)
-    subscriptions.current.push(sub)
-    return () => {
-      sub.remove()
-      subscriptions.current = subscriptions.current.filter((s) => s === sub)
-    }
-  }, [onSaveSketch])
-
-  useEffect(() => {
-    return () => {
-      subscriptions.current.forEach((s) => s.remove())
-      subscriptions.current = []
-    }
-  }, [])
-
-  const onChange = useCallback(
-    (event: any) => {
-      if (event.nativeEvent.type === "onSaveSketch") {
-        onSaveSketch?.({
-          localFilePath: event.nativeEvent.event.localFilePath,
-          imageWidth: event.nativeEvent.event.imageWidth,
-          imageHeight: event.nativeEvent.event.imageHeight,
-        })
-      }
-    },
-    [onSaveSketch]
-  )
-
-  const rnRef = useRef(null)
-  useImperativeHandle(ref, () => ({
-    clearSketch() {
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(rnRef.current),
-        "clearSketch" as any
-      )
-    },
-    saveSketch() {
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(rnRef.current),
-        "saveSketch" as any
-      )
-    },
-    changeTool(toolId) {
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(rnRef.current),
-        "changeTool" as any,
-        [toolId]
-      )
-    },
-  }))
-
-  return <RNSketchView ref={rnRef} {...props} onChange={onChange} />
-}
-const ForwardedSketchView = forwardRef(SketchView)
-export { ForwardedSketchView as SketchView }
-export default ForwardedSketchView

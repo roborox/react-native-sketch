@@ -1,41 +1,38 @@
 package com.reactnativesketch.tools
 
-import android.R.attr.path
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.view.View
-import com.reactnativesketch.utils.ToolUtils.ConvertDPToPixels
+import com.reactnativesketch.SketchView
+import com.reactnativesketch.utils.ToolUtils.convertDPToPixels
 
 
-class PenSketchTool(touchView: View?) : PathTrackingSketchTool(touchView), ToolThickness, ToolColor {
-  override var toolThickness = 0f
+class PenSketchTool(touchView: SketchView) : PathTrackingSketchTool(touchView), ToolThickness, ToolColor {
+  companion object {
+    const val DEFAULT_THICKNESS = 5f
+    const val DEFAULT_COLOR = Color.BLACK
+  }
+
+  override val type = TYPE_PEN
+
+  private val paint = Paint().apply {
+    style = Paint.Style.STROKE
+    isAntiAlias = true
+    strokeJoin = Paint.Join.ROUND
+    strokeCap = Paint.Cap.ROUND
+  }
+  override var toolThickness = DEFAULT_THICKNESS
     set(toolThickness) {
       field = toolThickness
-      paint.strokeWidth = ConvertDPToPixels(touchView.getContext(), toolThickness)
+      paint.strokeWidth = convertDPToPixels(touchView.getContext(), toolThickness)
     }
-  override var toolColor = 0
+  override var toolColor = DEFAULT_COLOR
     set(toolColor) {
       field = toolColor
       paint.color = toolColor
     }
-  private val paint = Paint()
 
-  init {
-    toolColor = DEFAULT_COLOR
-    toolThickness = DEFAULT_THICKNESS
-    paint.style = Paint.Style.STROKE
-    paint.isAntiAlias = true
-    paint.strokeJoin = Paint.Join.ROUND
-    paint.strokeCap = Paint.Cap.ROUND
-  }
-
-  companion object {
-    private const val DEFAULT_THICKNESS = 5f
-    private const val DEFAULT_COLOR = Color.BLACK
-  }
-
-  override fun render(canvas: Canvas?) {
-    canvas?.drawPath(path, paint)
+  override fun render(canvas: Canvas) {
+    canvas.drawPath(path, paint)
   }
 }

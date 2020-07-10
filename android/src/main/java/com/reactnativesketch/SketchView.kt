@@ -6,34 +6,40 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.view.MotionEvent
 import android.view.View
+import com.facebook.react.bridge.ReadableMap
 import com.reactnativesketch.tools.EraseSketchTool
 import com.reactnativesketch.tools.PenSketchTool
 import com.reactnativesketch.tools.SketchTool
 
 
 class SketchView(context: Context?) : View(context) {
+  private val penTool = PenSketchTool(this)
+  private val eraseTool = EraseSketchTool(this)
   var currentTool: SketchTool? = null
-  var penTool: SketchTool
-  var eraseTool: SketchTool
   var incrementalImage: Bitmap? = null
 
   init {
-    penTool = PenSketchTool(this)
-    eraseTool = EraseSketchTool(this)
-    setToolType(SketchTool.TYPE_PEN)
+    setTool(SketchTool.TYPE_PEN)
     setBackgroundColor(Color.TRANSPARENT)
   }
 
-  fun setToolType(toolType: Int) {
-    currentTool = when (toolType) {
-      SketchTool.TYPE_PEN -> penTool
-      SketchTool.TYPE_ERASE -> eraseTool
-      else -> penTool
-    }
+  private inline fun <T>maybe(props: ReadableMap?, name: String, default: T, block: ReadableMap.() -> T): T {
+    return if (props !== null && props.hasKey(name)) { props.block() } else { default }
   }
 
-  fun setToolColor(toolColor: Int) {
-    (penTool as PenSketchTool).toolColor = toolColor
+  fun setTool(toolType: Int, props: ReadableMap? = null) {
+    currentTool = when (toolType) {
+      SketchTool.TYPE_PEN -> {
+        penTool.toolColor = maybe(props, "color", PenSketchTool.DEFAULT_COLOR) { getInt("color") }
+        penTool.toolThickness = maybe(props, "thickness", PenSketchTool.DEFAULT_THICKNESS) { getDouble("thickness").toFloat() }
+        penTool
+      }
+      SketchTool.TYPE_ERASE -> {
+        eraseTool.toolThickness = maybe(props, "thickness", EraseSketchTool.DEFAULT_THICKNESS) { getDouble("thickness").toFloat() }
+        eraseTool
+      }
+      else -> penTool
+    }
   }
 
   fun setViewImage(bitmap: Bitmap?) {
@@ -41,7 +47,7 @@ class SketchView(context: Context?) : View(context) {
     invalidate()
   }
 
-  fun drawBitmap(): Bitmap {
+  private fun drawBitmap(): Bitmap {
     val viewBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(viewBitmap)
     draw(canvas)
@@ -56,7 +62,9 @@ class SketchView(context: Context?) : View(context) {
 
   override fun onDraw(canvas: Canvas) {
     super.onDraw(canvas)
-    if (incrementalImage != null) canvas.drawBitmap(incrementalImage, left.toFloat(), top.toFloat(), null)
+    incrementalImage?.also {
+      canvas.drawBitmap(incrementalImage, left.toFloat(), top.toFloat(), null)
+    }
     currentTool?.render(canvas)
   }
 
