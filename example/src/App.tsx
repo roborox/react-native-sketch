@@ -31,14 +31,19 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>Bah</Text>
-      <View style={{ flexDirection: "row" }}>
-        <Button title="Save" onPress={() => sketch.current?.saveSketch({ width: 512, height: 512 })} />
+      <View style={styles.row}>
+        <Button
+          title="Save"
+          onPress={() =>
+            sketch.current?.saveSketch({ width: 512, height: 512 })
+          }
+        />
         <Button title="Clear" onPress={() => sketch.current?.clearSketch()} />
         <Button title="Pen" onPress={() => setTool(SketchToolType.pen)} />
         <Button title="Erase" onPress={() => setTool(SketchToolType.erase)} />
       </View>
       {tool === SketchToolType.pen ? (
-        <View style={{ flexDirection: "row" }}>
+        <View style={styles.row}>
           <Button
             title="Red"
             onPress={() => setPenTool((t) => ({ ...t, color: "red" }))}
@@ -54,7 +59,7 @@ export default function App() {
         </View>
       ) : null}
       {tool === SketchToolType.pen ? (
-        <View style={{ flexDirection: "row" }}>
+        <View style={styles.row}>
           <Button
             title="30"
             onPress={() => setPenTool((t) => ({ ...t, thickness: 30 }))}
@@ -70,7 +75,7 @@ export default function App() {
         </View>
       ) : null}
       {tool === SketchToolType.erase ? (
-        <View style={{ flexDirection: "row" }}>
+        <View style={styles.row}>
           <Button
             title="30"
             onPress={() => setEraseTool((t) => ({ ...t, thickness: 30 }))}
@@ -85,13 +90,13 @@ export default function App() {
           />
         </View>
       ) : null}
-      <View style={{ flex: 1, flexDirection: "row" }}>
+      <View style={styles.sketchContainer}>
         <SketchView
           ref={sketch}
           toolType={tool}
           tool={tools[tool]}
           filePath={ExternalDirectoryPath + "/draw"}
-          style={{ flex: 1, opacity: 0.5 }}
+          style={styles.sketch}
           onLoad={(e) => console.log("loaded:", e)}
           onSaved={(e) => console.log("saved:", e)}
           onChange={() => console.log("changed")}
@@ -106,5 +111,16 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  row: {
+    flexDirection: "row",
+  },
+  sketchContainer: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  sketch: {
+    flex: 1,
+    opacity: 0.5,
   },
 })
