@@ -1,5 +1,5 @@
 {
-  "name": "react-native-sketch",
+  "name": "@roborox/react-native-sketch",
   "version": "0.1.0",
   "description": "Sketch view",
   "main": "lib/commonjs/index",

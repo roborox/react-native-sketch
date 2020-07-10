@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "react-native-sketch": ["./src/index"]
+      "@roborox/react-native-sketch": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

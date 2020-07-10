@@ -1,17 +1,17 @@
-# react-native-sketch
+# @roborox/react-native-sketch
 
 Sketch view
 
 ## Installation
 
 ```sh
-npm install react-native-sketch
+npm install @roborox/react-native-sketch
 ```
 
 ## Usage
 
 ```js
-import Sketch from "react-native-sketch";
+import Sketch from "@roborox/react-native-sketch";
 
 // ...
 
