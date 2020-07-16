@@ -1,4 +1,4 @@
-package com.example.reactnativesketch;
+package com.roborox.sketch.example;
 
 import com.facebook.react.ReactActivity;
 

@@ -1,11 +1,11 @@
-package com.reactnativesketch.tools
+package com.roborox.sketch.tools
 
 import android.graphics.Path
 import android.view.MotionEvent
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
-import com.reactnativesketch.SketchView
+import com.roborox.sketch.SketchView
 
 
 abstract class PathTrackingSketchTool(touchView: SketchView) : SketchTool(touchView) {

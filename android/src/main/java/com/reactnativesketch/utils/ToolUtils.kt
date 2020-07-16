@@ -1,4 +1,4 @@
-package com.reactnativesketch.utils
+package com.roborox.sketch.utils
 
 import android.content.Context
 import android.util.TypedValue

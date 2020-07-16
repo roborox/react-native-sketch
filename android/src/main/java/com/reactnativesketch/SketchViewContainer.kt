@@ -1,11 +1,11 @@
-package com.reactnativesketch
+package com.roborox.sketch
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.widget.LinearLayout
-import com.reactnativesketch.utils.sendLoadEvent
+import com.roborox.sketch.utils.sendLoadEvent
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*

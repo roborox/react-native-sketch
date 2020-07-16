@@ -1,6 +1,6 @@
 {
-  "name": "react-native-sketch-example",
-  "description": "Example app for react-native-sketch",
+  "name": "@roborox/sketch-example",
+  "description": "Example app for @roborox/sketch",
   "version": "0.0.1",
   "private": true,
   "scripts": {

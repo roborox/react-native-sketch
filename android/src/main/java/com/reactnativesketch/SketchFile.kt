@@ -1,4 +1,4 @@
-package com.reactnativesketch
+package com.roborox.sketch
 
 data class SketchFile(
   var filePath: String,

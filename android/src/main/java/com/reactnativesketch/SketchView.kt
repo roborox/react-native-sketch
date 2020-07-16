@@ -1,4 +1,4 @@
-package com.reactnativesketch
+package com.roborox.sketch
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -7,9 +7,9 @@ import android.graphics.Color
 import android.view.MotionEvent
 import android.view.View
 import com.facebook.react.bridge.ReadableMap
-import com.reactnativesketch.tools.EraseSketchTool
-import com.reactnativesketch.tools.PenSketchTool
-import com.reactnativesketch.tools.SketchTool
+import com.roborox.sketch.tools.EraseSketchTool
+import com.roborox.sketch.tools.PenSketchTool
+import com.roborox.sketch.tools.SketchTool
 
 
 class SketchView(context: Context?) : View(context) {

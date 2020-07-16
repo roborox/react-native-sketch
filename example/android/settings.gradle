@@ -2,5 +2,5 @@ rootProject.name = 'SketchExample'
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
 
-include ':reactnativesketch'
-project(':reactnativesketch').projectDir = new File(rootProject.projectDir, '../../android')
+include ':roborox_sketch'
+project(':roborox_sketch').projectDir = new File(rootProject.projectDir, '../../android')

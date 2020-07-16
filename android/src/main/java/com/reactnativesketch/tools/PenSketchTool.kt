@@ -1,10 +1,10 @@
-package com.reactnativesketch.tools
+package com.roborox.sketch.tools
 
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.reactnativesketch.SketchView
-import com.reactnativesketch.utils.ToolUtils.convertDPToPixels
+import com.roborox.sketch.SketchView
+import com.roborox.sketch.utils.ToolUtils.convertDPToPixels
 
 
 class PenSketchTool(touchView: SketchView) : PathTrackingSketchTool(touchView), ToolThickness, ToolColor {

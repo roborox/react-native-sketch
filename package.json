@@ -1,5 +1,5 @@
 {
-  "name": "@roborox/react-native-sketch",
+  "name": "@roborox/sketch",
   "version": "0.1.0",
   "description": "Sketch view",
   "main": "lib/commonjs/index",
@@ -13,7 +13,7 @@
     "android",
     "ios",
     "cpp",
-    "react-native-sketch.podspec",
+    "roborox_sketch.podspec",
     "!lib/typescript/example",
     "!**/__tests__",
     "!**/__fixtures__",
@@ -34,13 +34,13 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/anion155/react-native-sketch",
+  "repository": "https://github.com/roborox/sketch",
   "author": "Mikhaylov Anton <anion155@gmail.com> (https://github.com/anion155)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/anion155/react-native-sketch/issues"
+    "url": "https://github.com/roborox/sketch/issues"
   },
-  "homepage": "https://github.com/anion155/react-native-sketch#readme",
+  "homepage": "https://github.com/roborox/sketch#readme",
   "devDependencies": {
     "@commitlint/config-conventional": "^8.3.4",
     "@react-native-community/bob": "^0.16.2",

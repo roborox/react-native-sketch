@@ -1,11 +1,11 @@
-package com.reactnativesketch
+package com.roborox.sketch
 
 import com.facebook.react.bridge.*
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.annotations.ReactProp
-import com.reactnativesketch.utils.sendLoadEvent
-import com.reactnativesketch.utils.sendSavedEvent
+import com.roborox.sketch.utils.sendLoadEvent
+import com.roborox.sketch.utils.sendSavedEvent
 import java.util.*
 
 
