@@ -1,4 +1,4 @@
-package com.reactnativesketch
+package com.roborox.sketch
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule

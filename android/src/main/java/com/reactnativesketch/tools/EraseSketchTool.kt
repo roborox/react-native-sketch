@@ -1,12 +1,12 @@
-package com.reactnativesketch.tools
+package com.roborox.sketch.tools
 
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.view.View
-import com.reactnativesketch.SketchView
-import com.reactnativesketch.utils.ToolUtils.convertDPToPixels
+import com.roborox.sketch.SketchView
+import com.roborox.sketch.utils.ToolUtils.convertDPToPixels
 
 
 class EraseSketchTool(touchView: SketchView) : PathTrackingSketchTool(touchView), ToolThickness {

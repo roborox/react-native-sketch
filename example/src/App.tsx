@@ -6,7 +6,7 @@ import {
   SketchViewRef,
   PenSketchTool,
   EraseSketchTool,
-} from "@roborox/react-native-sketch"
+} from "@roborox/sketch"
 import { ExternalDirectoryPath } from "react-native-fs"
 
 export default function App() {

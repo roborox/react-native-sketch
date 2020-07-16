@@ -1,4 +1,4 @@
-package com.reactnativesketch.tools
+package com.roborox.sketch.tools
 
 interface ToolColor {
   var toolColor: Int
