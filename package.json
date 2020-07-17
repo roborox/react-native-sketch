@@ -1,6 +1,6 @@
 {
   "name": "@roborox/sketch",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Sketch view",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -36,6 +36,9 @@
   ],
   "repository": "https://github.com/roborox/sketch",
   "author": "Mikhaylov Anton <anion155@gmail.com> (https://github.com/anion155)",
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/roborox/sketch/issues"
@@ -119,7 +122,10 @@
       ]
     }
   },
-  "eslintIgnore": ["node_modules/", "lib/"],
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ],
   "prettier": {
     "quoteProps": "consistent",
     "doubleQuote": true,
@@ -131,6 +137,10 @@
   "@react-native-community/bob": {
     "source": "src",
     "output": "lib",
-    "targets": ["commonjs", "module", "typescript"]
+    "targets": [
+      "commonjs",
+      "module",
+      "typescript"
+    ]
   }
 }
